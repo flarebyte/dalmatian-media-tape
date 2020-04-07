@@ -3,30 +3,90 @@
 	"name": "Dalmatian Media Tape",
 	"patterns": [
 		{
-			"include": "#keywords"
+			"include": "#attributes"
 		},
 		{
-			"include": "#strings"
+			"include": "#keys"
+		},
+		{
+			"include": "#identifiers"
+		},
+		{
+			"include": "#urls"
+		},
+		{
+			"include": "#classes"
+		},
+		{
+			"include": "#fractions"
+		},
+		{
+			"include": "#sections"
 		}
 	],
 	"repository": {
-		"keywords": {
-			"patterns": [{
+		"urls": {
+			"patterns": [
+			  {
+				"name": "markup.underline.link.dlmt",
+				"match": "\bhttps://[^\\s]+$"
+			  }
+			]
+		  },
+		  "identifiers": {
+			"patterns": [
+			  {
 				"name": "keyword.control.dlmt",
-				"match": "\\b(if|while|for|return)\\b"
+				"match": "\bi:[0-9]+\b"
+			  }
+			]
+		  },
+		"sections": {
+			"patterns": [
+			  {
+				"name": "markup.heading.1.dlmt",
+				"match": "^(section header|section views|section tag-description|section brushes|section brushstrokes)$"
+			  }
+			]
+		  },
+		"keys": {
+			"patterns": [
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "^(license|title|description|attribution-name),[a-z]{2}(-[a-z]{2})?:"
+			  },
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "^(id-urn|require-sections|page-coordinate-system|page-ratio|brush-coordinate-system|brush-ratio|brush-page-ratio):"
+			  },
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "^(attribution-url|license-url|metadata-url|homepage-url),(html|json|markdown|rdf),[a-z]{2}(-[a-z]{2})?:"
+			  }
+			]
+		  },
+		  "classes": {
+			"patterns": [
+			  {
+				"name": "entity.name.class.dlmt",
+				"match": "\\b(tag|brushstroke|brush|view)\\b"
+			  }
+			]
+		  },
+		  "attributes": {
+			"patterns": [{
+				"name": "entity.name.tag.dlmt",
+				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y)\\b"
 			}]
 		},
-		"strings": {
-			"name": "string.quoted.double.dlmt",
-			"begin": "\"",
-			"end": "\"",
+		  "fractions": {
 			"patterns": [
-				{
-					"name": "constant.character.escape.dlmt",
-					"match": "\\\\."
-				}
+			  {
+				"name": "constant.numeric.dlmt",
+				"match": "\\b\\d+(\\\\d+)?\\b"
+			  }
 			]
-		}
+		  }
 	},
 	"scopeName": "source.dlmt"
 }
