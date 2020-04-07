@@ -1,6 +1,6 @@
 # Dalmatian Media Tape
 
-> Experimental format for storing vectorial images
+> Experimental format for storing monochrome (or colourless) vectorial images
 
 This includes:
 

@@ -8,15 +8,20 @@ title,en: My title
 description,en: Single line description
 metadata-url,rdf,en: http://website.com/meta
 homepage-url,markdown,en: https://github.com/owner/project#readme
-page-coordinate-system: centered-cartesian
+require-sections: [ header:0.5 , tag-description:0.5, brushes: 0.5, brushstrokes: 0.5]
+page-coordinate-system: system cartesian right-dir + up-dir - origin-x 1/2 origine-y 1/3
 page-ratio: 16/9
-brush-coordinate-system: centered-cartesian
+brush-coordinate-system: system cartesian right-dir + up-dir - origin-x 1/2 origine-y 1/2 
 brush-ratio: 1/1
 brush-page-ratio: 1/30
 --------
+section views
+view i:1 lang en-gb xy 1/5 1/3 width 1/4 height 1/5 -> head
+--------
 section tag-description
-tag 1, en-gb: part of head 
-tag 7, fr: pied
+tag i:1 lang en-gb -> part of head
+tag i:1 lang fr-fr -> visage
+tag i:7 lang fr -> pied
 --------
 section brushes
 brush i:1 [ M -1/3 1/3, l 2/3 0/1, l 0/1 2/3, l -2/3 0/1 ]

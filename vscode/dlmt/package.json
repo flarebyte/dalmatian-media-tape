@@ -2,7 +2,7 @@
     "name": "dlmt",
     "displayName": "dlmt",
     "description": "Dalmatian Media Tape Vectorial Image",
-    "version": "0.0.1",
+    "version": "0.5.0",
     "engines": {
         "vscode": "^1.43.0"
     },
