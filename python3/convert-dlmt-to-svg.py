@@ -15,8 +15,6 @@ parser.add_argument("-W", "--export-width", help="The width of generated bitmap 
 parser.add_argument("-v", "--view", help="The view id to export.", required = True)
 args = parser.parse_args()
 
-print(args)
-
 def normLines(lines):
     return [line.strip() for line in lines if line.strip() != ""]
 
@@ -33,7 +31,6 @@ def parseHeader(content):
     headers = { i.split(":", 1)[0].strip() : i.split(":", 1)[1].strip() for i in otherLines }
     return headers
 
-#view i:1 lang en-gb xy 1/5 1/3 width 1/4 height 1/5 -> head
 def parseView(line):
     other, description  = line.split("->")
     cmd, viewId, langKey, langId, xyKey, x, y, widthKey, width, heightKey, height = other.split()
@@ -60,7 +57,52 @@ def parseViews(content):
     if not "section views" in section:
         print("Expected views section but got {}".format(section))
         sys.exit(1)
-    views = [parseView(line) for line in otherLines]
+    views =  { parseView(line)['id'] : parseView(line) for line in otherLines }
+    return views
+
+def parseTagDescription(line):
+    other, description  = line.split("->")
+    cmd, descId, langKey, langId, sameAsKey, sameAsInfo = other.split(" ",5)
+    assert cmd == "tag"
+    assert langKey == "lang"
+    assert sameAsKey == "same-as"
+
+    return {
+        "id": descId,
+        "description": description,
+        "lang": langId,
+        "same-as": sameAsInfo  
+    }
+
+def idLang(obj):
+    return obj['id']+"-"+obj['lang']
+
+def parseTagDescriptions(content):
+    lines = normLines(content.splitlines())
+    section = lines[0]
+    otherLines = stripUnknown("->", lines[1:])
+    if not "section tag-descriptions" in section:
+        print("Expected tag-descriptions section but got {}".format(section))
+        sys.exit(1)
+    views = { idLang(parseTagDescription(line)): parseTagDescription(line) for line in otherLines }
+    return views
+
+def parseBrush(line):
+    cmd, brushId, other = line.split(" ", 2 )
+    assert cmd == "brush"
+    return {
+        "id": brushId,
+        "other": other
+    }
+
+def parseBrushes(content):
+    lines = normLines(content.splitlines())
+    section = lines[0]
+    otherLines = stripUnknown("[", lines[1:])
+    if not "section brushes" in section:
+        print("Expected brushes section but got {}".format(section))
+        sys.exit(1)
+    views = { parseBrush(line)['id']: parseBrush(line) for line in otherLines }
     return views
 
 def loadDalmatianAsString(filename):
@@ -68,8 +110,11 @@ def loadDalmatianAsString(filename):
         data = myfile.read()
         header, views, tagDescriptions, brushes, brushstrokes = data.split('--------')
         return {
-            'headers': parseHeader(header),
-            'views': parseViews(views)
+            'header': parseHeader(header),
+            'views': parseViews(views),
+            'tag-descriptions': parseTagDescriptions(tagDescriptions),
+            'brushes': parseBrushes(brushes)
+
 
         }
 
