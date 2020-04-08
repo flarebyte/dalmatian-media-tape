@@ -59,7 +59,7 @@
 			"patterns": [
 			  {
 				"name": "markup.heading.1.dlmt",
-				"match": "^(section header|section views|section tag-description|section brushes|section brushstrokes)$"
+				"match": "^(section header|section views|section tag-descriptions|section brushes|section brushstrokes)$"
 			  }
 			]
 		  },
@@ -79,7 +79,7 @@
 			"patterns": [
 			  {
 				"name": "keyword.control.dlmt",
-				"match": "^(license|title|description|attribution-name),[a-z]{2}(-[a-z]{2})?:"
+				"match": "^(license|title|description|attribution-name|brushes-license|brushes-attribution-name),[a-z]{2}(-[a-z]{2})?:"
 			  },
 			  {
 				"name": "keyword.control.dlmt",
@@ -87,7 +87,7 @@
 			  },
 			  {
 				"name": "keyword.control.dlmt",
-				"match": "^(attribution-url|license-url|metadata-url|homepage-url),(html|json|markdown|rdf),[a-z]{2}(-[a-z]{2})?:"
+				"match": "^(attribution-url|license-url|brushes-attribution-url|brushes-license-url|metadata-url|homepage-url),(html|json|markdown|rdf),[a-z]{2}(-[a-z]{2})?:"
 			  }
 			]
 		  },

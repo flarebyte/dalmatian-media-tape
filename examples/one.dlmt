@@ -4,6 +4,10 @@ license,en: Creative Commons
 license-url,json,en: http://website.com/license
 attribution-name,en-gb: Firstname LastName
 attribution-url,html,en: http://website.com/creator
+brushes-license,en: Creative Commons
+brushes-license-url,json,en: http://website.com/license
+brushes-attribution-name,en-gb: Firstname LastName
+brushes-attribution-url,html,en: http://website.com/creator
 title,en: My title
 description,en: Single line description
 metadata-url,rdf,en: http://website.com/meta
@@ -18,7 +22,7 @@ brush-page-ratio: 1/30
 section views
 view i:1 lang en-gb xy 1/5 1/3 width 1/4 height 1/5 -> head
 --------
-section tag-description
+section tag-descriptions
 tag i:1 lang en-gb same-as [ geospecies:bioclasses/P632y ] -> part of head
 tag i:1 lang fr-fr -> visage
 tag i:7 lang fr -> pied
