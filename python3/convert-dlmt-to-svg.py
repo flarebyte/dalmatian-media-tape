@@ -34,11 +34,11 @@ def parseHeader(content):
 def parseView(line):
     other, description  = line.split("->")
     cmd, viewId, langKey, langId, xyKey, x, y, widthKey, width, heightKey, height = other.split()
-    assert cmd == "view"
-    assert langKey == "lang"
-    assert xyKey == "xy"
-    assert widthKey == "width"
-    assert heightKey == "height"
+    assert cmd == "view", line
+    assert langKey == "lang", line
+    assert xyKey == "xy", line
+    assert widthKey == "width", line
+    assert heightKey == "height", line
 
     return {
         "id": viewId,
@@ -63,9 +63,9 @@ def parseViews(content):
 def parseTagDescription(line):
     other, description  = line.split("->")
     cmd, descId, langKey, langId, sameAsKey, sameAsInfo = other.split(" ",5)
-    assert cmd == "tag"
-    assert langKey == "lang"
-    assert sameAsKey == "same-as"
+    assert cmd == "tag", line
+    assert langKey == "lang", line
+    assert sameAsKey == "same-as", line
 
     return {
         "id": descId,
@@ -87,12 +87,15 @@ def parseTagDescriptions(content):
     views = { idLang(parseTagDescription(line)): parseTagDescription(line) for line in otherLines }
     return views
 
+def parseVectorialPath(str):
+    return normLines(str.replace("[", "").replace("]", "").split(","))
+
 def parseBrush(line):
     cmd, brushId, other = line.split(" ", 2 )
-    assert cmd == "brush"
+    assert cmd == "brush", line
     return {
         "id": brushId,
-        "other": other
+        "path": parseVectorialPath(other)
     }
 
 def parseBrushes(content):
@@ -105,6 +108,36 @@ def parseBrushes(content):
     views = { parseBrush(line)['id']: parseBrush(line) for line in otherLines }
     return views
 
+
+def parseTags(str):
+    return set(normLines(str.replace("[", "").replace("]", "").split(",")))
+
+def parseBrushStroke(line):
+    cmd, brushstrokeId, xyKey, x, y, scaleKey, scale, angleKey, angle, tagsKey, tagsInfo = line.split(" ", 10 )
+    assert cmd == "brushstroke", line
+    assert xyKey == "xy", line
+    assert scaleKey == "scale", line
+    assert angleKey == "angle", line
+    assert tagsKey == "tags", line
+    return {
+        "id": brushstrokeId,
+        "x": x,
+        "y": y,
+        "scale": scale,
+        "angle": angle,
+        "tags": parseTags(tagsInfo)
+    }
+
+def parseBrushStrokes(content):
+    lines = normLines(content.splitlines())
+    section = lines[0]
+    otherLines = lines[1:]
+    if not "section brushstrokes" in section:
+        print("Expected brushstrokes section but got {}".format(section))
+        sys.exit(1)
+    views = [ parseBrushStroke(line) for line in otherLines ]
+    return views
+
 def loadDalmatianAsString(filename):
     with open(filename, 'r') as myfile:
         data = myfile.read()
@@ -113,9 +146,8 @@ def loadDalmatianAsString(filename):
             'header': parseHeader(header),
             'views': parseViews(views),
             'tag-descriptions': parseTagDescriptions(tagDescriptions),
-            'brushes': parseBrushes(brushes)
-
-
+            'brushes': parseBrushes(brushes),
+            'brushstrokes': parseBrushStrokes(brushstrokes)
         }
 
 print(loadDalmatianAsString(args.file))
