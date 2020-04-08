@@ -3,6 +3,12 @@
 	"name": "Dalmatian Media Tape",
 	"patterns": [
 		{
+			"include": "#languages"
+		},
+		{
+			"include": "#delimiters"
+		},
+		{
 			"include": "#attributes"
 		},
 		{
@@ -41,11 +47,31 @@
 			  }
 			]
 		  },
+		  "languages": {
+			"patterns": [
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "\b(en|fr)-(gb|us|fr)\b"
+			  }
+			]
+		  },
 		"sections": {
 			"patterns": [
 			  {
 				"name": "markup.heading.1.dlmt",
 				"match": "^(section header|section views|section tag-description|section brushes|section brushstrokes)$"
+			  }
+			]
+		  },
+		  "delimiters": {
+			"patterns": [
+			  {
+				"name": "markup.heading.1.dlmt",
+				"match": "^--------$"
+			  },
+			  {
+				"name": "markup.heading.1.dlmt",
+				"match": "->"
 			  }
 			]
 		  },
@@ -76,7 +102,7 @@
 		  "attributes": {
 			"patterns": [{
 				"name": "entity.name.tag.dlmt",
-				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y)\\b"
+				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y|same-as)\\b"
 			}]
 		},
 		  "fractions": {
