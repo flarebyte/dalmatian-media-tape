@@ -21,6 +21,23 @@ def normLines(lines):
 def stripUnknown(expected, lines):
     return [line for line in lines if expected in line]
 
+# system cartesian right-dir + up-dir - origin-x 1/2 origin-y 1/3
+def parseCoordinateSystem(line):
+    systemKey, cartesianKey, rightDirKey, rightDir, upDirKey, upDir, originXKey, originX, originYKey, originY = line.split()
+    assert systemKey == "system", line
+    assert cartesianKey == "cartesian", line
+    assert rightDirKey == "right-dir", line
+    assert upDirKey == "up-dir", line
+    assert originXKey == "origin-x", line
+    assert originYKey == "origin-y", line
+
+    return {
+        "right-dir": rightDir,
+        "up-dir": upDir,
+        "origin-x": originX,
+        "origin-y": originY  
+    }
+
 def parseHeader(content):
     lines = content.splitlines()
     section = lines[0]
@@ -29,6 +46,13 @@ def parseHeader(content):
         print("Expected header section but got {}".format(section))
         sys.exit(1)
     headers = { i.split(":", 1)[0].strip() : i.split(":", 1)[1].strip() for i in otherLines }
+    assert "page-coordinate-system" in headers, "page-coordinate-system is missing"
+    assert "page-ratio" in headers, "page-coordinate-system is missing"
+    assert "brush-coordinate-system" in headers, "brush-coordinate-system"
+    assert "brush-ratio" in headers, "brush-ratio is missing"
+    assert "brush-page-ratio" in headers, "brush-page-ratio"
+    headers['page-coordinate-system'] = parseCoordinateSystem(headers['page-coordinate-system'])
+    headers['brush-coordinate-system'] = parseCoordinateSystem(headers['brush-coordinate-system'])
     return headers
 
 def parseView(line):
