@@ -99,7 +99,7 @@ def parseTagDescription(line):
     }
 
 def idLang(obj):
-    return obj['id']+"-"+obj['lang']
+    return obj['id']+" "+obj['lang']
 
 def parseTagDescriptions(content):
     lines = normLines(content.splitlines())
@@ -144,7 +144,7 @@ def parseBrushStroke(line):
     assert angleKey == "angle", line
     assert tagsKey == "tags", line
     return {
-        "id": brushstrokeId,
+        "brushstroke-id": brushstrokeId,
         "x": x,
         "y": y,
         "scale": scale,
@@ -162,16 +162,31 @@ def parseBrushStrokes(content):
     views = [ parseBrushStroke(line) for line in otherLines ]
     return views
 
-def loadDalmatianAsString(filename):
+def getTagIds(tagDesc):
+    return set([key.split()[0] for key in tagDesc])
+
+def loadDalmatian(filename):
     with open(filename, 'r') as myfile:
         data = myfile.read()
         header, views, tagDescriptions, brushes, brushstrokes = data.split('--------')
+        tagDesc = parseTagDescriptions(tagDescriptions)
         return {
             'header': parseHeader(header),
             'views': parseViews(views),
-            'tag-descriptions': parseTagDescriptions(tagDescriptions),
+            'tag-descriptions': tagDesc,
+            'tag-ids': getTagIds(tagDesc),
             'brushes': parseBrushes(brushes),
             'brushstrokes': parseBrushStrokes(brushstrokes)
         }
 
-print(loadDalmatianAsString(args.file))
+def checkBrushStrokes(everything):
+    tagIds = everything['tag-ids']
+    brushIds = set(everything['brushes'].keys())
+    brushstrokes = everything['brushstrokes']
+    for brushstroke in brushstrokes:
+        assert brushstroke['brushstroke-id'] in brushIds, brushstroke
+        assert brushstroke['tags'].issubset(tagIds), brushstroke
+
+dlmtContent = loadDalmatian(args.file)
+
+checkBrushStrokes(dlmtContent)
