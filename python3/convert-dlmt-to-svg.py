@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+import xml.etree.ElementTree as ET
 
 if not (sys.version_info.major == 3 and sys.version_info.minor >= 5):
     print("convert-dlmt-to-svg requires Python 3.5 or higher!")
@@ -10,7 +11,7 @@ if not (sys.version_info.major == 3 and sys.version_info.minor >= 5):
 parser = argparse.ArgumentParser(description = 'Convert a Dalmatian Mask Tape media')
 parser.add_argument("-f", "--file", help="The dlmt file to convert.", required = True)
 parser.add_argument("-e", "--export-svg", help="Specify the filename for SVG export.", required = True)
-parser.add_argument("-H", "--export-height", help="The height of generated bitmap in pixels.", required = True)
+# parser.add_argument("-H", "--export-height", help="The height of generated bitmap in pixels.", required = True)
 parser.add_argument("-W", "--export-width", help="The width of generated bitmap in pixels.", required = True)
 parser.add_argument("-v", "--view", help="The view id to export.", required = True)
 args = parser.parse_args()
@@ -20,6 +21,10 @@ def normLines(lines):
 
 def stripUnknown(expected, lines):
     return [line for line in lines if expected in line]
+
+def fromFraction(dimension, fraction):
+    numerator, denominator = fraction.split('/')
+    return (dimension * float(numerator)) / float(denominator)
 
 # system cartesian right-dir + up-dir - origin-x 1/2 origin-y 1/3
 def parseCoordinateSystem(line):
@@ -148,14 +153,14 @@ def parseTags(str):
     return set(normLines(str.replace("[", "").replace("]", "").split(",")))
 
 def parseBrushStroke(line):
-    cmd, brushstrokeId, xyKey, x, y, scaleKey, scale, angleKey, angle, tagsKey, tagsInfo = line.split(" ", 10 )
+    cmd, brushId, xyKey, x, y, scaleKey, scale, angleKey, angle, tagsKey, tagsInfo = line.split(" ", 10 )
     assert cmd == "brushstroke", line
     assert xyKey == "xy", line
     assert scaleKey == "scale", line
     assert angleKey == "angle", line
     assert tagsKey == "tags", line
     return {
-        "brushstroke-id": brushstrokeId,
+        "brush-id": brushId,
         "x": x,
         "y": y,
         "scale": scale,
@@ -207,6 +212,60 @@ def checkReferences(everything, viewId):
     
     assert viewId in everything['views'], 'missing view {}'.format(viewId)
 
+class CoordinateSystem:
+    def __init__(self, sectionHeader, width):
+        self.header = sectionHeader
+        self.pageCoord = sectionHeader['page-coordinate-system']
+        self.brushCoord = sectionHeader['brush-coordinate-system']
+    
+    def toDeg(self, fraction):
+        return fromFraction(360, fraction)
+    
+    def toScale(self, fraction):
+        return fromFraction(1, fraction)
+
+    def toPageX(self, fraction):
+        self.pageCoord['origin-x']
+        return fromFraction(123, fraction)
+
+    def toPageY(self, fraction):
+        self.pageCoord['origin-y']
+        return fromFraction(123, fraction)
+
+    def toBrushX(self, fraction):
+        self.brushCoord['origin-x']
+        return fromFraction(123, fraction)
+
+    def toBrushY(self, fraction):
+        self.brushCoord['origin-y']
+        return fromFraction(123, fraction)
+
+def asSvgBrushId(id):
+    return id.replace('i:', 'brush')
+
+def createSvgBrush(brush, coordSystem):
+    symbol = ET.Element('symbol', attrib = {"id": asSvgBrushId(brush['id']), "viewBox": "0 0 100 600"})
+    ET.SubElement(symbol, 'path', attrib = { "d": "M0,10 h80 M10,0 v20 M25,0 v20 M40,0 v20 M55,0 v20 M70,0 v20"})
+    return symbol
+
+def createSvgBrushStroke(brushstroke, coordSystem):
+    rotation = coordSystem.toDeg(brushstroke['angle'])
+    scale = coordSystem.toScale(brushstroke['scale'])
+    translation = coordSystem.toPageX(brushstroke['x']) + ' ' + coordSystem.toPageY(brushstroke['y'])
+    element = ET.Element('g', attrib = {"transform": "rotate ({}) scale ({}) translate({})".format(rotation, scale, translation)})
+    ET.SubElement(element, 'use', attrib = { "fill": "black", "xlink:href": '#'+asSvgBrushId(brushstroke['brush-id']}))
+    return element
+
+def createSvgDocument(everything, viewId, width):
+    coordSystem = CoordinateSystem(everything['header'], width)
+    svg = ET.Element('svg')
+    for brush in everything['brushes']:
+        svg.append(createSvgBrush(brush, coordSystem))
+    for brushstroke in everything['brushstrokes']:
+        svg.append(createSvgBrushStroke(brushstroke, coordSystem))
+    return ET.dump(svg)
+
 dlmtContent = loadDalmatian(args.file)
 
 checkReferences(dlmtContent, args.view)
+createSvgDocument(dlmtContent, args.view)
