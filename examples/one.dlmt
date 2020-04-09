@@ -12,6 +12,7 @@ title,en: My title
 description,en: Single line description
 metadata-url,rdf,en: http://website.com/meta
 homepage-url,markdown,en: https://github.com/owner/project#readme
+prefixes: [ website http://website.com/, github https://github.com/, brushes http://website.com/brushes, geospecies http://rdf.geospecies.org/ont/  ]
 require-sections: [ header:0.5 , tag-description:0.5, brushes: 0.5, brushstrokes: 0.5]
 page-coordinate-system: system cartesian right-dir + up-dir - origin-x 1/2 origin-y 1/3
 page-ratio: 16/9
@@ -28,8 +29,8 @@ tag i:1 lang fr-fr same-as [] -> visage
 tag i:7 lang fr same-as [] -> pied
 --------
 section brushes
-brush i:1 [ M -1/3 1/3, l 2/3 0/1, l 0/1 2/3, l -2/3 0/1 ]
-brush i:2 [ M -1/3 1/3, l 2/3 0, l 0 2/3, l -2/3 0/1 ]
+brush i:1 ext-id brushes:abc3F path [ M -1/3 1/3, l 2/3 0/1, l 0/1 2/3, l -2/3 0/1 ]
+brush i:2 ext-id brushes:abc4F path [ M -1/3 1/3, l 2/3 0, l 0 2/3, l -2/3 0/1 ]
 --------
 section brushstrokes
 brushstroke i:1 xy 1/4 3/4 scale 1/10 angle 1/12 tags [ i:1, i:7 ]

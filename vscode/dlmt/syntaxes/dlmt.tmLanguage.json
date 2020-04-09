@@ -83,7 +83,7 @@
 			  },
 			  {
 				"name": "keyword.control.dlmt",
-				"match": "^(id-urn|require-sections|page-coordinate-system|page-ratio|brush-coordinate-system|brush-ratio|brush-page-ratio):"
+				"match": "^(id-urn|require-sections|page-coordinate-system|page-ratio|brush-coordinate-system|brush-ratio|brush-page-ratio|prefixes):"
 			  },
 			  {
 				"name": "keyword.control.dlmt",
@@ -102,7 +102,7 @@
 		  "attributes": {
 			"patterns": [{
 				"name": "entity.name.tag.dlmt",
-				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y|same-as)\\b"
+				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y|same-as|ext-id|path)\\b"
 			}]
 		},
 		  "fractions": {

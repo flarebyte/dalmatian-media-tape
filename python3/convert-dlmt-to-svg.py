@@ -38,6 +38,9 @@ def parseCoordinateSystem(line):
         "origin-y": originY  
     }
 
+def parsePrefixes(str):
+    return set(normLines(str.replace("[", "").replace("]", "").split(",")))
+
 def parseHeader(content):
     lines = content.splitlines()
     section = lines[0]
@@ -51,8 +54,10 @@ def parseHeader(content):
     assert "brush-coordinate-system" in headers, "brush-coordinate-system"
     assert "brush-ratio" in headers, "brush-ratio is missing"
     assert "brush-page-ratio" in headers, "brush-page-ratio"
+    assert "prefixes" in headers, "prefixes"
     headers['page-coordinate-system'] = parseCoordinateSystem(headers['page-coordinate-system'])
     headers['brush-coordinate-system'] = parseCoordinateSystem(headers['brush-coordinate-system'])
+    headers['prefixes'] = { prefix.split()[0]: prefix.split()[1] for prefix in parsePrefixes(headers['prefixes'])}
     return headers
 
 def parseView(line):
@@ -84,6 +89,9 @@ def parseViews(content):
     views =  { parseView(line)['id'] : parseView(line) for line in otherLines }
     return views
 
+def parseSameAs(str):
+    return list(normLines(str.replace("[", "").replace("]", "").split(",")))
+
 def parseTagDescription(line):
     other, description  = line.split("->")
     cmd, descId, langKey, langId, sameAsKey, sameAsInfo = other.split(" ",5)
@@ -95,7 +103,7 @@ def parseTagDescription(line):
         "id": descId,
         "description": description,
         "lang": langId,
-        "same-as": sameAsInfo  
+        "same-as": parseSameAs(sameAsInfo)  
     }
 
 def idLang(obj):
@@ -115,10 +123,13 @@ def parseVectorialPath(str):
     return normLines(str.replace("[", "").replace("]", "").split(","))
 
 def parseBrush(line):
-    cmd, brushId, other = line.split(" ", 2 )
+    cmd, brushId, extIdKey, extId, pathKey, other = line.split(" ", 5 )
     assert cmd == "brush", line
+    assert extIdKey == "ext-id", line
+    assert pathKey == "path", line
     return {
         "id": brushId,
+        "ext-id": extId,
         "path": parseVectorialPath(other)
     }
 
@@ -179,14 +190,21 @@ def loadDalmatian(filename):
             'brushstrokes': parseBrushStrokes(brushstrokes)
         }
 
-def checkBrushStrokes(everything):
+def checkReferences(everything):
     tagIds = everything['tag-ids']
     brushIds = set(everything['brushes'].keys())
-    brushstrokes = everything['brushstrokes']
-    for brushstroke in brushstrokes:
+    prefixes = set(everything['header']['prefixes'].keys())
+    for _, tagDesc in everything['tag-descriptions'].items():
+        for sameAs in tagDesc['same-as']:
+            assert sameAs.split(':')[0] in prefixes, sameAs
+    
+    for _, brush in everything['brushes'].items():
+        assert brush['ext-id'].split(':')[0] in prefixes, brush
+    
+    for brushstroke in everything['brushstrokes']:
         assert brushstroke['brushstroke-id'] in brushIds, brushstroke
         assert brushstroke['tags'].issubset(tagIds), brushstroke
 
 dlmtContent = loadDalmatian(args.file)
 
-checkBrushStrokes(dlmtContent)
+checkReferences(dlmtContent)
