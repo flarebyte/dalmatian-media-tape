@@ -190,7 +190,7 @@ def loadDalmatian(filename):
             'brushstrokes': parseBrushStrokes(brushstrokes)
         }
 
-def checkReferences(everything):
+def checkReferences(everything, viewId):
     tagIds = everything['tag-ids']
     brushIds = set(everything['brushes'].keys())
     prefixes = set(everything['header']['prefixes'].keys())
@@ -204,7 +204,9 @@ def checkReferences(everything):
     for brushstroke in everything['brushstrokes']:
         assert brushstroke['brushstroke-id'] in brushIds, brushstroke
         assert brushstroke['tags'].issubset(tagIds), brushstroke
+    
+    assert viewId in everything['views'], 'missing view {}'.format(viewId)
 
 dlmtContent = loadDalmatian(args.file)
 
-checkReferences(dlmtContent)
+checkReferences(dlmtContent, args.view)
