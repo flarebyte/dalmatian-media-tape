@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+from fractions import Fraction
 
 if not (sys.version_info.major == 3 and sys.version_info.minor >= 5):
     print("convert-dlmt-to-svg requires Python 3.5 or higher!")
@@ -16,33 +17,14 @@ parser.add_argument("-W", "--width", help="The width of generated bitmap in pixe
 parser.add_argument("-v", "--view", help="The view id to export.", required = True)
 args = parser.parse_args()
 
+def fmtFract(fraction):
+    return format(float(fraction), '.3f')
+
 def normLines(lines):
     return [line.strip() for line in lines if line.strip() != ""]
 
 def stripUnknown(expected, lines):
     return [line for line in lines if expected in line]
-
-def fromFraction(dimension, fraction):
-    numerator, denominator = fraction.split('/')
-    return (dimension * float(numerator)) / float(denominator)
-
-def addFractions(fraction1, fraction2):
-    numerator1, denominator1 = fraction1.split('/')
-    numerator2, denominator2 = fraction2.split('/')
-    numerator = (numerator1*denominator2)+(numerator2*denominator1)
-    denominator = denominator1 * denominator2
-    return  str(numerator) + "/" + str(denominator)
-
-def multiplyFractions(fraction1, fraction2):
-    numerator1, denominator1 = fraction1.split('/')
-    numerator2, denominator2 = fraction2.split('/')
-    numerator = numerator1 * numerator2
-    denominator = denominator1 * denominator2
-    return  str(numerator) + "/" + str(denominator)
-
-def fractionToFloat(fraction):
-    numerator, denominator = fraction.split('/')
-    return float(numerator) / float(denominator)
 
 # system cartesian right-dir + up-dir - origin-x 1/2 origin-y 1/3
 def parseCoordinateSystem(line):
@@ -81,6 +63,9 @@ def parseHeader(content):
     headers['page-coordinate-system'] = parseCoordinateSystem(headers['page-coordinate-system'])
     headers['brush-coordinate-system'] = parseCoordinateSystem(headers['brush-coordinate-system'])
     headers['prefixes'] = { prefix.split()[0]: prefix.split()[1] for prefix in parsePrefixes(headers['prefixes'])}
+    headers['page-ratio'] = Fraction(headers['page-ratio'])
+    headers['brush-ratio'] = Fraction(headers['brush-ratio'])
+    headers['brush-page-ratio'] = Fraction(headers['brush-page-ratio'])
     return headers
 
 def parseView(line):
@@ -96,10 +81,10 @@ def parseView(line):
         "id": viewId,
         "description": description,
         "lang": langId,
-        "x": x,
-        "y": y,
-        "width": width,
-        "height": height       
+        "x": Fraction(x),
+        "y": Fraction(y),
+        "width": Fraction(width),
+        "height": Fraction(height)       
     }
 
 def parseViews(content):
@@ -179,10 +164,10 @@ def parseBrushStroke(line):
     assert tagsKey == "tags", line
     return {
         "brush-id": brushId,
-        "x": x,
-        "y": y,
-        "scale": scale,
-        "angle": angle,
+        "x": Fraction(x),
+        "y": Fraction(y),
+        "scale": Fraction(scale),
+        "angle": Fraction(angle),
         "tags": parseTags(tagsInfo)
     }
 
@@ -237,26 +222,26 @@ class CoordinateSystem:
         self.brushCoord = sectionHeader['brush-coordinate-system']
     
     def toDeg(self, fraction):
-        return fromFraction(360, fraction)
+        return fmtFract(360 * fraction)
     
     def toScale(self, fraction):
-        return fromFraction(1, fraction)
+        return fmtFract(fraction)
 
     def toPageX(self, fraction):
         self.pageCoord['origin-x']
-        return str(fromFraction(123, fraction))
+        return fmtFract(fraction)
 
     def toPageY(self, fraction):
         self.pageCoord['origin-y']
-        return str(fromFraction(123, fraction))
+        return fmtFract(fraction)
 
     def toBrushX(self, fraction):
         self.brushCoord['origin-x']
-        return str(fromFraction(123, fraction))
+        return fmtFract(fraction)
 
     def toBrushY(self, fraction):
         self.brushCoord['origin-y']
-        return str(fromFraction(123, fraction))
+        return fmtFract(fraction)
 
 def asSvgBrushId(id):
     return id.replace('i:', 'brush')
