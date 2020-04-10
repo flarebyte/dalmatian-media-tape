@@ -248,13 +248,11 @@ class CoordinateSystem:
     def toPageViewBox(self):
         return "0 0 "+fmtFract(self.pixel_width)+ " " + fmtFract(self.pixel_height)
 
-    def toBrushX(self, fraction):
-        self.brushCoord['origin-x']
-        return fmtFract(fraction)
+    def toBrushSegment(self, fractions):
+        return " ".join([fmtFract(self.brush_pixel_width*Fraction(fraction)) for fraction in fractions.split()])
 
-    def toBrushY(self, fraction):
-        self.brushCoord['origin-y']
-        return fmtFract(fraction)
+    def toPath(self, segments):
+        return " ".join([segment[0:1]+self.toBrushSegment(segment[2:]) for segment in segments])
 
     def toBrushViewBox(self):
         return  fmtFract(Fraction(-1/2)*self.brush_pixel_width) + " "+fmtFract(Fraction(-1/2)*self.brush_pixel_height) + " "+fmtFract(self.brush_pixel_width)+ " " + fmtFract(self.brush_pixel_height)
@@ -264,7 +262,7 @@ def asSvgBrushId(id):
 
 def createSvgBrush(brush, coordSystem):
     symbol = ET.Element('symbol', attrib = {"id": asSvgBrushId(brush['id']), "viewBox": coordSystem.toBrushViewBox()})
-    ET.SubElement(symbol, 'path', attrib = { "d": "M0,10 h80 M10,0 v20 M25,0 v20 M40,0 v20 M55,0 v20 M70,0 v20"})
+    ET.SubElement(symbol, 'path', attrib = { "d": coordSystem.toPath(brush['path']) })
     return symbol
 
 def createSvgBrushStroke(brushstroke, coordSystem):
