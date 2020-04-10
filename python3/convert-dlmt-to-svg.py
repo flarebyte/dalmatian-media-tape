@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(description = 'Convert a Dalmatian Mask Tape me
 parser.add_argument("-f", "--file", help="The dlmt file to convert.", required = True)
 parser.add_argument("-e", "--export-svg", help="Specify the filename for SVG export.", required = True)
 # parser.add_argument("-H", "--export-height", help="The height of generated bitmap in pixels.", required = True)
-parser.add_argument("-W", "--export-width", help="The width of generated bitmap in pixels.", required = True)
+parser.add_argument("-W", "--width", help="The width of generated bitmap in pixels.", required = True)
 parser.add_argument("-v", "--view", help="The view id to export.", required = True)
 args = parser.parse_args()
 
@@ -25,6 +25,24 @@ def stripUnknown(expected, lines):
 def fromFraction(dimension, fraction):
     numerator, denominator = fraction.split('/')
     return (dimension * float(numerator)) / float(denominator)
+
+def addFractions(fraction1, fraction2):
+    numerator1, denominator1 = fraction1.split('/')
+    numerator2, denominator2 = fraction2.split('/')
+    numerator = (numerator1*denominator2)+(numerator2*denominator1)
+    denominator = denominator1 * denominator2
+    return  str(numerator) + "/" + str(denominator)
+
+def multiplyFractions(fraction1, fraction2):
+    numerator1, denominator1 = fraction1.split('/')
+    numerator2, denominator2 = fraction2.split('/')
+    numerator = numerator1 * numerator2
+    denominator = denominator1 * denominator2
+    return  str(numerator) + "/" + str(denominator)
+
+def fractionToFloat(fraction):
+    numerator, denominator = fraction.split('/')
+    return float(numerator) / float(denominator)
 
 # system cartesian right-dir + up-dir - origin-x 1/2 origin-y 1/3
 def parseCoordinateSystem(line):
@@ -207,7 +225,7 @@ def checkReferences(everything, viewId):
         assert brush['ext-id'].split(':')[0] in prefixes, brush
     
     for brushstroke in everything['brushstrokes']:
-        assert brushstroke['brushstroke-id'] in brushIds, brushstroke
+        assert brushstroke['brush-id'] in brushIds, brushstroke
         assert brushstroke['tags'].issubset(tagIds), brushstroke
     
     assert viewId in everything['views'], 'missing view {}'.format(viewId)
@@ -226,19 +244,19 @@ class CoordinateSystem:
 
     def toPageX(self, fraction):
         self.pageCoord['origin-x']
-        return fromFraction(123, fraction)
+        return str(fromFraction(123, fraction))
 
     def toPageY(self, fraction):
         self.pageCoord['origin-y']
-        return fromFraction(123, fraction)
+        return str(fromFraction(123, fraction))
 
     def toBrushX(self, fraction):
         self.brushCoord['origin-x']
-        return fromFraction(123, fraction)
+        return str(fromFraction(123, fraction))
 
     def toBrushY(self, fraction):
         self.brushCoord['origin-y']
-        return fromFraction(123, fraction)
+        return str(fromFraction(123, fraction))
 
 def asSvgBrushId(id):
     return id.replace('i:', 'brush')
@@ -253,13 +271,13 @@ def createSvgBrushStroke(brushstroke, coordSystem):
     scale = coordSystem.toScale(brushstroke['scale'])
     translation = coordSystem.toPageX(brushstroke['x']) + ' ' + coordSystem.toPageY(brushstroke['y'])
     element = ET.Element('g', attrib = {"transform": "rotate ({}) scale ({}) translate({})".format(rotation, scale, translation)})
-    ET.SubElement(element, 'use', attrib = { "fill": "black", "xlink:href": '#'+asSvgBrushId(brushstroke['brush-id']}))
+    ET.SubElement(element, 'use', attrib = { "fill": "black", "xlink:href": '#'+asSvgBrushId(brushstroke['brush-id'])})
     return element
 
 def createSvgDocument(everything, viewId, width):
     coordSystem = CoordinateSystem(everything['header'], width)
     svg = ET.Element('svg')
-    for brush in everything['brushes']:
+    for _, brush in everything['brushes'].items():
         svg.append(createSvgBrush(brush, coordSystem))
     for brushstroke in everything['brushstrokes']:
         svg.append(createSvgBrushStroke(brushstroke, coordSystem))
@@ -268,4 +286,4 @@ def createSvgDocument(everything, viewId, width):
 dlmtContent = loadDalmatian(args.file)
 
 checkReferences(dlmtContent, args.view)
-createSvgDocument(dlmtContent, args.view)
+createSvgDocument(dlmtContent, args.view, args.width)
