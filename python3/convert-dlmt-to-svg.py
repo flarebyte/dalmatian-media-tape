@@ -2,7 +2,11 @@ import os
 import sys
 import argparse
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import ElementTree
 from fractions import Fraction
+
+ET.register_namespace('', "http://www.w3.org/2000/svg")
+ET.register_namespace('xlink', "http://www.w3.org/1999/xlink")
 
 if not (sys.version_info.major == 3 and sys.version_info.minor >= 5):
     print("convert-dlmt-to-svg requires Python 3.5 or higher!")
@@ -216,8 +220,13 @@ def checkReferences(everything, viewId):
     assert viewId in everything['views'], 'missing view {}'.format(viewId)
 
 class CoordinateSystem:
-    def __init__(self, sectionHeader, width):
+    def __init__(self, sectionHeader, view, width):
         self.header = sectionHeader
+        self.view = view
+        self.pixel_width = Fraction(width)
+        self.pixel_height = Fraction(width) / sectionHeader['page-ratio']
+        self.brush_pixel_width = Fraction(width) * sectionHeader['brush-page-ratio']
+        self.brush_pixel_height = self.brush_pixel_width
         self.pageCoord = sectionHeader['page-coordinate-system']
         self.brushCoord = sectionHeader['brush-coordinate-system']
     
@@ -228,12 +237,16 @@ class CoordinateSystem:
         return fmtFract(fraction)
 
     def toPageX(self, fraction):
-        self.pageCoord['origin-x']
-        return fmtFract(fraction)
+        result = (fraction - self.view['x'])/self.view['width']
+        # print('x', result)
+        return fmtFract(result*self.pixel_width)
 
     def toPageY(self, fraction):
-        self.pageCoord['origin-y']
-        return fmtFract(fraction)
+        result = (fraction - self.view['y'])/self.view['height']
+        return fmtFract(result*self.pixel_height)
+    
+    def toPageViewBox(self):
+        return "0 0 "+fmtFract(self.pixel_width)+ " " + fmtFract(self.pixel_height)
 
     def toBrushX(self, fraction):
         self.brushCoord['origin-x']
@@ -243,11 +256,14 @@ class CoordinateSystem:
         self.brushCoord['origin-y']
         return fmtFract(fraction)
 
+    def toBrushViewBox(self):
+        return  fmtFract(Fraction(-1/2)*self.brush_pixel_width) + " "+fmtFract(Fraction(-1/2)*self.brush_pixel_height) + " "+fmtFract(self.brush_pixel_width)+ " " + fmtFract(self.brush_pixel_height)
+
 def asSvgBrushId(id):
     return id.replace('i:', 'brush')
 
 def createSvgBrush(brush, coordSystem):
-    symbol = ET.Element('symbol', attrib = {"id": asSvgBrushId(brush['id']), "viewBox": "0 0 100 600"})
+    symbol = ET.Element('symbol', attrib = {"id": asSvgBrushId(brush['id']), "viewBox": coordSystem.toBrushViewBox()})
     ET.SubElement(symbol, 'path', attrib = { "d": "M0,10 h80 M10,0 v20 M25,0 v20 M40,0 v20 M55,0 v20 M70,0 v20"})
     return symbol
 
@@ -259,16 +275,16 @@ def createSvgBrushStroke(brushstroke, coordSystem):
     ET.SubElement(element, 'use', attrib = { "fill": "black", "xlink:href": '#'+asSvgBrushId(brushstroke['brush-id'])})
     return element
 
-def createSvgDocument(everything, viewId, width):
-    coordSystem = CoordinateSystem(everything['header'], width)
-    svg = ET.Element('svg')
+def createSvgDocument(everything, args):
+    coordSystem = CoordinateSystem(everything['header'],everything['views'][args.view], args.width)
+    svg = ET.Element('svg', attrib = { "xmlns": "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink", "viewBox": coordSystem.toPageViewBox()})
     for _, brush in everything['brushes'].items():
         svg.append(createSvgBrush(brush, coordSystem))
     for brushstroke in everything['brushstrokes']:
         svg.append(createSvgBrushStroke(brushstroke, coordSystem))
-    return ET.dump(svg)
+    ElementTree(svg).write('temp1.svg', encoding='UTF-8')
 
 dlmtContent = loadDalmatian(args.file)
 
 checkReferences(dlmtContent, args.view)
-createSvgDocument(dlmtContent, args.view, args.width)
+createSvgDocument(dlmtContent, args)
