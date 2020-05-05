@@ -1,0 +1,118 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Dalmatian Media Tape",
+	"patterns": [
+		{
+			"include": "#languages"
+		},
+		{
+			"include": "#delimiters"
+		},
+		{
+			"include": "#attributes"
+		},
+		{
+			"include": "#keys"
+		},
+		{
+			"include": "#identifiers"
+		},
+		{
+			"include": "#urls"
+		},
+		{
+			"include": "#classes"
+		},
+		{
+			"include": "#fractions"
+		},
+		{
+			"include": "#sections"
+		}
+	],
+	"repository": {
+		"urls": {
+			"patterns": [
+			  {
+				"name": "markup.underline.link.dlmt",
+				"match": "\bhttps://[^\\s]+$"
+			  }
+			]
+		  },
+		  "identifiers": {
+			"patterns": [
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "\bi:[0-9]+\b"
+			  }
+			]
+		  },
+		  "languages": {
+			"patterns": [
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "\b(en|fr)-(gb|us|fr)\b"
+			  }
+			]
+		  },
+		"sections": {
+			"patterns": [
+			  {
+				"name": "markup.heading.1.dlmt",
+				"match": "^(section header|section views|section tag-descriptions|section brushes|section brushstrokes)$"
+			  }
+			]
+		  },
+		  "delimiters": {
+			"patterns": [
+			  {
+				"name": "markup.heading.1.dlmt",
+				"match": "^--------$"
+			  },
+			  {
+				"name": "markup.heading.1.dlmt",
+				"match": "->"
+			  }
+			]
+		  },
+		"keys": {
+			"patterns": [
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "^(license|title|description|attribution-name|brushes-license|brushes-attribution-name),[a-z]{2}(-[a-z]{2})?:"
+			  },
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "^(id-urn|require-sections|page-coordinate-system|page-ratio|brush-coordinate-system|brush-ratio|brush-page-ratio|prefixes):"
+			  },
+			  {
+				"name": "keyword.control.dlmt",
+				"match": "^(attribution-url|license-url|brushes-attribution-url|brushes-license-url|metadata-url|homepage-url),(html|json|markdown|rdf),[a-z]{2}(-[a-z]{2})?:"
+			  }
+			]
+		  },
+		  "classes": {
+			"patterns": [
+			  {
+				"name": "entity.name.class.dlmt",
+				"match": "\\b(tag|brushstroke|brush|view)\\b"
+			  }
+			]
+		  },
+		  "attributes": {
+			"patterns": [{
+				"name": "entity.name.tag.dlmt",
+				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y|same-as|ext-id|path)\\b"
+			}]
+		},
+		  "fractions": {
+			"patterns": [
+			  {
+				"name": "constant.numeric.dlmt",
+				"match": "\\b\\d+(\\\\d+)?\\b"
+			  }
+			]
+		  }
+	},
+	"scopeName": "source.dlmt"
+}

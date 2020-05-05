@@ -1,0 +1,25 @@
+{
+    "name": "dlmt",
+    "displayName": "dlmt",
+    "description": "Dalmatian Media Tape Vectorial Image",
+    "version": "0.5.0",
+    "engines": {
+        "vscode": "^1.43.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "dlmt",
+            "aliases": ["Dalmatian Media Tape", "dlmt"],
+            "extensions": [".dlmt"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "dlmt",
+            "scopeName": "source.dlmt",
+            "path": "./syntaxes/dlmt.tmLanguage.json"
+        }]
+    }
+}
