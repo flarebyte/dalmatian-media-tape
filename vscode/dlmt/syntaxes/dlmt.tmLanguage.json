@@ -79,15 +79,15 @@
 			"patterns": [
 			  {
 				"name": "keyword.control.dlmt",
-				"match": "^(license|title|description|attribution-name|brushes-license|brushes-attribution-name),[a-z]{2}(-[a-z]{2})?:"
+				"match": "^(license|title|description|attribution-name|brushes-license|brushes-attribution-name|name|author) [a-z]{2}(-[a-z]{2})?:"
 			  },
 			  {
 				"name": "keyword.control.dlmt",
-				"match": "^(id-urn|require-sections|page-coordinate-system|page-ratio|brush-coordinate-system|brush-ratio|brush-page-ratio|prefixes):"
+				"match": "^(id-urn|require-sections|page-coordinate-system|page-ratio|brush-coordinate-system|brush-ratio|brush-page-ratio|prefixes|copyright-year|is-family-friendly|has-parts):"
 			  },
 			  {
 				"name": "keyword.control.dlmt",
-				"match": "^(attribution-url|license-url|brushes-attribution-url|brushes-license-url|metadata-url|homepage-url),(html|json|markdown|rdf),[a-z]{2}(-[a-z]{2})?:"
+				"match": "^(attribution-url|license-url|brushes-attribution-url|brushes-license-url|metadata-url|homepage-url|content-url|author-url|repository-url|thumbnail-url) (html|json|json-ld|markdown|rdf|nt|ttl|dlmt|csv) [a-z]{2}(-[a-z]{2})?:"
 			  }
 			]
 		  },
@@ -102,7 +102,7 @@
 		  "attributes": {
 			"patterns": [{
 				"name": "entity.name.tag.dlmt",
-				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y|same-as|ext-id|path)\\b"
+				"match": "\\b(lang|xy|width|height|scale|angle|tags|system|cartesian|right-dir|up-dir|origin-x|origin-y|same-as|ext-id|path|flags)\\b"
 			}]
 		},
 		  "fractions": {
