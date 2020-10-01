@@ -25,40 +25,61 @@ is-family-friendly: yes
 has-parts: [  ]
 --------
 section views
-view i:1 lang en-gb xy 0 0 width 1 height 1 flags OC tags all but [  ] -> everything
-view i:2 lang en-gb xy 1/5 1/5 width 1/2 height 1/2 flags OC tags all but [  ] -> everything
+view i:1 lang en-gb xy 0 0 width 1 height 1  flags OC tags all but [  ] vtags [i:1]-> everything
+view i:2 lang en-gb xy 1/5 1/5 width 1/2 height 1/2 flags OC tags all but [  ] vtags [] -> everything
 --------
 section tag-descriptions
 tag i:1 lang en-gb same-as [  ] -> default tag
 --------
 section brushes
 brush i:1 ext-id brushes:home path [ M -1/3 1/3,L 0 0,L 1/3 1/3,L 1/3 -1/3,L -1/3 -1/3 ]
+
 --------
 section brushstrokes
-brushstroke i:1 xy 0 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/10 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/5 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 3/10 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 2/5 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/2 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 3/5 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 7/10 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 4/5 1/10 scale 1 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 0 3/10 scale 1/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/10 3/10 scale 11/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/5 3/10 scale 21/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 3/10 3/10 scale 31/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 2/5 3/10 scale 41/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/2 3/10 scale 51/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 3/5 3/10 scale 61/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 7/10 3/10 scale 71/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 4/5 3/10 scale 81/10 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 0 1/2 scale 3 angle 0 tags [ i:1 ]
-brushstroke i:1 xy 1/10 1/2 scale 3 angle 1/9 tags [ i:1 ]
-brushstroke i:1 xy 1/5 1/2 scale 3 angle 2/9 tags [ i:1 ]
-brushstroke i:1 xy 3/10 1/2 scale 3 angle 1/3 tags [ i:1 ]
-brushstroke i:1 xy 2/5 1/2 scale 3 angle 4/9 tags [ i:1 ]
-brushstroke i:1 xy 1/2 1/2 scale 3 angle 5/9 tags [ i:1 ]
-brushstroke i:1 xy 3/5 1/2 scale 3 angle 2/3 tags [ i:1 ]
-brushstroke i:1 xy 7/10 1/2 scale 3 angle 7/9 tags [ i:1 ]
-brushstroke i:1 xy 4/5 1/2 scale 3 angle 8/9 tags [ i:1 ]
+brushstroke i:1 b i:1 xy 0 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:2 b i:1 xy 1/10 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:3 b i:1 xy 1/5 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:4 b i:1 xy 3/10 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:5 b i:1 xy 2/5 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:6 b i:1 xy 1/2 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:7 b i:1 xy 3/5 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:8 b i:1 xy 7/10 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:9 b i:1 xy 4/5 1/10 scale 1 angle 0 tags [ i:1 ]
+brushstroke i:10 b i:1 xy 0 3/10 scale 1/10 angle 0 tags [ i:1 ]
+brushstroke i:11 b i:1 xy 1/10 3/10 scale 11/10 angle 0 tags [ i:1 ]
+brushstroke i:12 b i:1 xy 3/10 3/10 scale 31/10 angle 0 tags [ i:1 ]
+brushstroke i:13 b i:1 xy 1/5 3/10 scale 21/10 angle 0 tags [ i:1 ]
+brushstroke i:14 b i:1 xy 2/5 3/10 scale 41/10 angle 0 tags [ i:1 ]
+brushstroke i:15 b i:1 xy 1/2 3/10 scale 51/10 angle 0 tags [ i:1 ]
+brushstroke i:16 b i:1 xy 3/5 3/10 scale 61/10 angle 0 tags [ i:1 ]
+brushstroke i:17 b i:1 xy 7/10 3/10 scale 71/10 angle 0 tags [ i:1 ]
+brushstroke i:18 b i:1 xy 4/5 3/10 scale 81/10 angle 0 tags [ i:1 ]
+brushstroke i:19 b i:1 xy 0 1/2 scale 3 angle 0 tags [ i:1 ]
+brushstroke i:20 b i:1 xy 1/10 1/2 scale 3 angle 1/9 tags [ i:1 ]
+brushstroke i:21 b i:1 xy 1/5 1/2 scale 3 angle 2/9 tags [ i:1 ]
+brushstroke i:22 b i:1 xy 3/10 1/2 scale 3 angle 1/3 tags [ i:1 ]
+brushstroke i:23 b i:1 xy 2/5 1/2 scale 3 angle 4/9 tags [ i:1 ]
+brushstroke i:24 b i:1 xy 1/2 1/2 scale 3 angle 5/9 tags [ i:1 ]
+brushstroke i:25 b i:1 xy 3/5 1/2 scale 3 angle 2/3 tags [ i:1 ]
+brushstroke i:26 b i:1 xy 7/10 1/2 scale 3 angle 7/9 tags [ i:1 ]
+brushstroke i:27 b i:1 xy 4/5 1/2 scale 3 angle 8/9 tags [ i:1 ]
+
+--------
+section ctrlpoints
+ctrlpoint i:1 cubic 4/5 1/2 1/2 1/4
+
+--------
+section shapes
+shape . cubic-bezier i:1 pts [ 1/4 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape .. cubic-bezier i:2 pts [ 1/7 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape ... cubic-bezier i:3 pts [ 1/7 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape .. cubic-bezier i:4 pts [ 1/7 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape ... cubic-bezier i:5 pts [ 1/7 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape ... cubic-bezier i:6 pts [ 1/7 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape . cubic-bezier i:100 pts [ 1/4 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+shape .. cubic-bezier i:101 pts [ 1/7 1/3, 1/2 1/4, 1/4 1/5] ctrl [ i:1 i:2 i:3] tags [ i:1 ]
+
+--------
+section transitions
+transition i:1 brushstroke i:1 i:4 tags [ i:1 ]
+transition i:1 shape i:2 i:4 pidx 0 3 tags [ i:1 ]
